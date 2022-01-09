@@ -1,4 +1,16 @@
-'use strict'
+const baseUrl = `https://www.balldontlie.io/api/v1/players`
+const axios = require('axios')
+
+const players = async () => {
+  try {
+    const player = await axios.get(baseUrl)
+    const { data } = player;
+    return data.data;
+
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 const {db, models: {User} } = require('../server/db')
 
@@ -7,6 +19,7 @@ const {db, models: {User} } = require('../server/db')
  *      match the models, and populates the database.
  */
 async function seed() {
+
   await db.sync({ force: true }) // clears db and matches models to tables
   console.log('db synced!')
 
