@@ -10,27 +10,21 @@ const {db, models: {User, Player} } = require('../server/db')
  *      match the models, and populates the database.
  */
 async function seed() {
-
-  let playerData = [];
+  let playerArray = [];
   const players = async () => {
-    let morePagesAvailable = true;
-    let currentPage = 0;
   try {
-    while (morePagesAvailable) {
-      currentPage += 1;
-      const response = await axios.get(`https://www.balldontlie.io/api/v1/players?page=${currentPage}`);
-      let { data } = await response;
-      data.data.forEach(ply =>
-        playerData.unshift(ply));
-      morePagesAvailable = currentPage < data.meta.total_pages;
+    for (let i = 1; i <= 25; i++) {
+      let eachPage = await axios.get(`https://www.balldontlie.io/api/v1/players?page=${i}`);
+      let playersData = eachPage.data.data;
+      playerArray = playerArray.concat(playersData);
     }
-    return playerData;
+    return playerArray;
   } catch (error) {
     console.log(error);
   }
 }
   await players();
-  const promisedArray = await Promise.all(playerData);
+  const promisedArray = await Promise.all(playerArray);
 
   await db.sync({ force: true }) // clears db and matches models to tables
   console.log('db synced!')
