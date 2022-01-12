@@ -1,10 +1,9 @@
 
+const axios = require('axios');
+const res = require('express/lib/response');
 
-const baseUrl = `https://www.balldontlie.io/api/v1/players`
-const axios = require('axios')
 
-
-const {db, models: {User} } = require('../server/db')
+const {db, models: {User, Player} } = require('../server/db')
 
 /**
  * seed - this function clears the database, updates tables to
@@ -12,12 +11,19 @@ const {db, models: {User} } = require('../server/db')
  */
 async function seed() {
 
-  let playerData = []
+  let playerData = [];
   const players = async () => {
+    let morePagesAvailable = true;
+    let currentPage = 0;
   try {
-    const req = await axios.get(baseUrl);
-    playerData = req.data.data;
-
+    while (morePagesAvailable) {
+      currentPage += 1;
+      const response = await axios.get(`https://www.balldontlie.io/api/v1/players?page=${currentPage}`);
+      let { data } = await response;
+      data.data.forEach(ply =>
+        playerData.unshift(ply));
+      morePagesAvailable = currentPage < data.meta.total_pages;
+    }
     return playerData;
   } catch (error) {
     console.log(error);
@@ -25,11 +31,19 @@ async function seed() {
 }
   await players();
   const promisedArray = await Promise.all(playerData);
-  console.log(promisedArray)
 
   await db.sync({ force: true }) // clears db and matches models to tables
   console.log('db synced!')
 
+  promisedArray.map((playersApi => {
+    Player.create({
+      playerId: playersApi.id,
+      firstName: playersApi.first_name,
+      lastName: playersApi.last_name,
+      position: playersApi.position,
+      team: playersApi.team.full_name
+    })
+  }))
   // Creating Users
   const users = await Promise.all([
     User.create({ username: 'cody', password: '123' }),
