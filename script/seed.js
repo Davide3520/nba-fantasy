@@ -13,7 +13,7 @@ async function seed() {
   let playerArray = [];
   const players = async () => {
   try {
-    for (let i = 1; i <= 25; i++) {
+    for (let i = 1; i <= 100; i++) {
       let eachPage = await axios.get(`https://www.balldontlie.io/api/v1/players?page=${i}`);
       let playersData = eachPage.data.data;
       playerArray = playerArray.concat(playersData);
