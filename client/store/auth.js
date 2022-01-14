@@ -29,7 +29,6 @@ export const me = () => async dispatch => {
 }
 
 export const authenticate = (username, password, method, email) => async dispatch => {
-  console.log('"------>',username, password, email, method)
   try {
     const res = await axios.post(`/auth/${method}`, {username, password, email})
     window.localStorage.setItem(TOKEN, res.data.token)
