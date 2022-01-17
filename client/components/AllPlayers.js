@@ -35,6 +35,7 @@ export const Players = (props) => {
               >
                 <TableCell component="th" scope="row">{player.firstName}</TableCell>
                 <TableCell align="center">{player.lastName}</TableCell>
+                <TableCell align="center">{player.position}</TableCell>
               </TableRow>
           })}
         </TableBody>
