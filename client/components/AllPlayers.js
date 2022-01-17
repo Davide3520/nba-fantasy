@@ -29,6 +29,7 @@ export const Players = (props) => {
         </TableHead>
         <TableBody>
           {players.map((player) => {
+            return (
             <TableRow
               key={player.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -38,7 +39,7 @@ export const Players = (props) => {
                 <TableCell align="center">{player.position}</TableCell>
                 <TableCell align="center">{player.team}</TableCell>
               </TableRow>
-          })}
+            )})}
         </TableBody>
       </Table>
     </TableContainer>
