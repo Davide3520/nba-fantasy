@@ -1,10 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { all_players } from "../store/players-store";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 export const Players = (props) => {
+
+  useEffect(() => {
+    props.fetchPlayers()
+  }, [])
+  const {players} = props;
+  console.log(players)
   return (
-    <h3>PLAYERSSSS</h3>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label= "simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>First Name</TableCell>
+            <TableCell align="center">Last Name</TableCell>
+            <TableCell align="center">Team</TableCell>
+            <TableCell align="center">Position</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {players.map((player) => {
+            <TableRow
+              key={player.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                
+              </TableRow>
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 
@@ -16,7 +50,7 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    fetchPlayers: () => dispatch(all_players),
+    fetchPlayers: () => dispatch(all_players()),
   }
 }
 
