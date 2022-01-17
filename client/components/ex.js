@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from "react-redux";
-import { all_players } from "../store/players-store";
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -81,17 +77,33 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
+function createData(name, calories, fat) {
+  return { name, calories, fat };
+}
 
-export const Players = (props) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+const rows = [
+  createData('Cupcake', 305, 3.7),
+  createData('Donut', 452, 25.0),
+  createData('Eclair', 262, 16.0),
+  createData('Frozen yoghurt', 159, 6.0),
+  createData('Gingerbread', 356, 16.0),
+  createData('Honeycomb', 408, 3.2),
+  createData('Ice cream sandwich', 237, 9.0),
+  createData('Jelly Bean', 375, 0.0),
+  createData('KitKat', 518, 26.0),
+  createData('Lollipop', 392, 0.2),
+  createData('Marshmallow', 318, 0),
+  createData('Nougat', 360, 19.0),
+  createData('Oreo', 437, 18.0),
+].sort((a, b) => (a.calories < b.calories ? -1 : 1));
 
-  useEffect(() => {
-    props.fetchPlayers()
-  }, [])
-  const {players} = props;
+export default function CustomPaginationActionsTable() {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-  page > 0 ? Math.max(0, (1 + page) * rowsPerPage - players.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0; // rows
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -104,43 +116,37 @@ export const Players = (props) => {
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 500 }} aria-label= "custom pagination table">
-        <TableHead>
-          <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell align="center">Last Name</TableCell>
-            <TableCell align="center">Team</TableCell>
-            <TableCell align="center">Position</TableCell>
-          </TableRow>
-        </TableHead>
+      <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableBody>
-        {(rowsPerPage > 0
-            ? players.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : players
-          ).map((player) => {
-            return (
-            <TableRow
-              key={player.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">{player.firstName}</TableCell>
-                <TableCell align="center">{player.lastName}</TableCell>
-                <TableCell align="center">{player.position}</TableCell>
-                <TableCell align="center">{player.team}</TableCell>
-              </TableRow>
-            )})}
-            {emptyRows > 0 && (
+          {(rowsPerPage > 0
+            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : rows
+          ).map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.calories}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.fat}
+              </TableCell>
+            </TableRow>
+          ))}
+
+          {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
           )}
         </TableBody>
         <TableFooter>
-        <TableRow>
+          <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={3}
-              count={players.length}
+              count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
@@ -157,19 +163,5 @@ export const Players = (props) => {
         </TableFooter>
       </Table>
     </TableContainer>
-  )
+  );
 }
-
-const mapState = (state) => {
-  return {
-    players: state.allPlayers,
-  }
-}
-
-const mapDispatch = (dispatch) => {
-  return {
-    fetchPlayers: () => dispatch(all_players()),
-  }
-}
-
-export default connect(mapState, mapDispatch)(Players)
