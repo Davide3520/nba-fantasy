@@ -5,7 +5,7 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import {me} from './store'
 import Players from './components/AllPlayers';
-import CustomPaginationActionsTable from './components/ex'
+
 /**
  * COMPONENT
  */
@@ -23,7 +23,6 @@ class Routes extends Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Route path="/players" component={Players} />
-            <Route path="/ex" component={CustomPaginationActionsTable} />
             <Redirect to="/home" />
           </Switch>
         ) : (
