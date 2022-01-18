@@ -18,6 +18,7 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
+import { Link } from 'react-router-dom';
 
 
 function TablePaginationActions(props) {
@@ -101,6 +102,9 @@ export const Players = (props) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const playerName = (event) => {
+    console.log(event.target.value)
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -123,10 +127,10 @@ export const Players = (props) => {
               key={player.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell component="th" scope="row">{player.firstName}</TableCell>
-                <TableCell align="center">{player.lastName}</TableCell>
-                <TableCell align="center">{player.position}</TableCell>
-                <TableCell align="center">{player.team}</TableCell>
+                <TableCell component="th" scope="row" onClick={playerName}><button value={[player.firstName, player.lastName, player.team, player.position]}>{player.firstName}</button></TableCell>
+                <TableCell align="center" onClick={playerName} value={player.lastName}>{player.lastName}</TableCell>
+                <TableCell align="center"  onClick={playerName} value={player.position}>{player.position}</TableCell>
+                <TableCell align="center"  onClick={playerName} value={player.team}>{player.team}</TableCell>
               </TableRow>
             )})}
             {emptyRows > 0 && (
