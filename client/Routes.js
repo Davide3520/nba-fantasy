@@ -5,7 +5,7 @@ import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import {me} from './store'
 import Players from './components/AllPlayers';
-
+import MyTeam from './components/myTeam';
 /**
  * COMPONENT
  */
@@ -23,6 +23,7 @@ class Routes extends Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Route path="/players" component={Players} />
+            <Route path="/my-team" component={MyTeam}/>
             <Redirect to="/home" />
           </Switch>
         ) : (
