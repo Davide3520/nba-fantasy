@@ -5,8 +5,8 @@ const db = require('./db')
 const User = require('./models/User')
 const Player = require('./models/Players')
 
-User.belongsToMany(Player, {through: 'user-players'})
-Player.belongsToMany(User, {through: 'user-players'});
+User.belongsToMany(Player, {through: 'my-team'})
+Player.belongsToMany(User, {through: 'my-team'});
 
 module.exports = {
   db,

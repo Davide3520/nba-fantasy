@@ -1,6 +1,7 @@
 
 const axios = require('axios');
 const res = require('express/lib/response');
+const { user } = require('pg/lib/defaults');
 
 
 const {db, models: {User, Player} } = require('../server/db')
@@ -29,7 +30,7 @@ async function seed() {
   await db.sync({ force: true }) // clears db and matches models to tables
   console.log('db synced!')
 
-  promisedArray.map((playersApi => {
+   promisedArray.map((playersApi => {
     Player.create({
       playerId: playersApi.id,
       firstName: playersApi.first_name,
@@ -38,11 +39,27 @@ async function seed() {
       team: playersApi.team.full_name
     })
   }))
+
   // Creating Users
   const users = await Promise.all([
     User.create({ username: 'cody', password: '123', email: 'cody@banana.com' }),
     User.create({ username: 'murphy', password: '123', email: 'murf@gg.com' }),
   ])
+  console.log(Object.keys(User.prototype))
+
+  await Promise.all(users.map((user)=>
+      user.addPlayer(promisedArray[Math.floor(Math.random() * promisedArray.length)])
+    ))
+  // await Promise.all(users.map((user)=>
+  //  console.log(user)
+  //     // user.addPlayer(promisedArray[Math.floor(Math.random() * promisedArray.length)])
+  //   ))
+
+  // await users[0].setPlayers(promisedArray[1])
+  // await users[0].addPlayer(promisedArray[2])
+  // await users[0].addPlayer(promisedArray[3])
+  // await users[0].addPlayer(promisedArray[4])
+  // await users[0].addPlayer(promisedArray[5])
 
   console.log(`seeded ${users.length} users`)
   console.log(`seeded successfully`)
