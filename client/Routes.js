@@ -4,9 +4,8 @@ import {withRouter, Route, Switch, Redirect} from 'react-router-dom'
 import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import {me} from './store'
-import Players from './components/AllPlayers';
 import MyTeam from './components/myTeam';
-import EnhancedTable from './components/ex';
+import  EnhancedTable  from './components/AllPlayers';
 /**
  * COMPONENT
  */
@@ -23,8 +22,7 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/home" component={Home} />
-            <Route path="/players" component={Players} />
-            <Route path="/ex" component={EnhancedTable} />
+            <Route path="/players" component={EnhancedTable} />
             <Route path="/my-team" component={MyTeam}/>
             <Redirect to="/home" />
           </Switch>

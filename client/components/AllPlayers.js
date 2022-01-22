@@ -269,7 +269,6 @@ export function EnhancedTable(props) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.players.length) : 0;
 
-    console.log(selected)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -295,10 +294,8 @@ export function EnhancedTable(props) {
               {stableSort(props.players, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  console.log(row)
                   const isItemSelected = isSelected(row.firstName);
                   const labelId = `enhanced-table-checkbox-${index}`;
-                  console.log(props)
                   return (
                     <TableRow
                       hover
