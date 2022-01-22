@@ -6,6 +6,7 @@ import Home from './components/Home';
 import {me} from './store'
 import Players from './components/AllPlayers';
 import MyTeam from './components/myTeam';
+import EnhancedTable from './components/ex';
 /**
  * COMPONENT
  */
@@ -23,6 +24,7 @@ class Routes extends Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Route path="/players" component={Players} />
+            <Route path="/ex" component={EnhancedTable} />
             <Route path="/my-team" component={MyTeam}/>
             <Redirect to="/home" />
           </Switch>
