@@ -23,6 +23,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import MyTeam from './myTeam';
 import { WindowRounded } from '@mui/icons-material';
+import { connect } from "react-redux";
+import { all_players } from "../store/players-store";
 function createData(name, calories, fat, carbs, protein) {
   return {
     name,
@@ -217,7 +219,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable() {
+export function EnhancedTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -234,12 +236,16 @@ export default function EnhancedTable() {
   const handleSelectAllClick = (event) => {
     event.preventDefault()
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = props.players.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
+
+  React.useEffect(() => {
+    props.fetchPlayers()
+  }, [])
 
   React.useEffect(() => {
     setSelected(JSON.stringify(window.localStorage.getItem('rows')));
@@ -286,7 +292,7 @@ export default function EnhancedTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.players.length) : 0;
 
     console.log(selected)
 
@@ -306,25 +312,26 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={props.players.length}
             />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(props.players, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  console.log(row)
+                  const isItemSelected = isSelected(row.firstName);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
+                  console.log(props)
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.firstName)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -342,12 +349,12 @@ export default function EnhancedTable() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.firstName}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right">{row.lastName}</TableCell>
+                      <TableCell align="right">{row.position}</TableCell>
+                      <TableCell align="right">{row.team}</TableCell>
+                      {/* <TableCell align="right">{row.protein}</TableCell> */}
                     </TableRow>
                   );
                 })}
@@ -366,7 +373,7 @@ export default function EnhancedTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={props.players.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -381,3 +388,18 @@ export default function EnhancedTable() {
     </Box>
   );
 }
+
+
+const mapState = (state) => {
+  return {
+    players: state.allPlayers,
+  }
+}
+
+const mapDispatch = (dispatch) => {
+  return {
+    fetchPlayers: () => dispatch(all_players()),
+  }
+}
+
+export default connect(mapState, mapDispatch)(EnhancedTable)
