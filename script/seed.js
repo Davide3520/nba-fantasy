@@ -30,7 +30,7 @@ async function seed() {
   await db.sync({ force: true }) // clears db and matches models to tables
   console.log('db synced!')
 
-   const x = promisedArray.map((playersApi => {
+   promisedArray.map((playersApi => {
     return Player.create({
       playerId: playersApi.id,
       firstName: playersApi.first_name,
@@ -45,11 +45,11 @@ async function seed() {
     User.create({ username: 'cody', password: '123', email: 'cody@banana.com' }),
     User.create({ username: 'murphy', password: '123', email: 'murf@gg.com' }),
   ])
-  console.log(Object.keys(User.prototype))
+  // console.log(Object.keys(User.prototype))
 
-  await Promise.all(users.map((user)=>
-      user.addPlayer(x[Math.floor(Math.random() * x.length)])
-    ))
+  // await Promise.all(users.map((user)=>
+  //     user.addPlayer(x[Math.floor(Math.random() * x.length)])
+  //   ))
 
   // await users[0].addPlayer({playerId: 1, firstName: "Lebron", lastName: "James", position: "SF", team: "Lakers"})
   // await users[0].addPlayer(promisedArray[2])
